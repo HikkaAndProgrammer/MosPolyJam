@@ -5,38 +5,27 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float timeToMove = 1f;
-    public string[] directions = {"up", "right", "down"};//Список ходов
-    // Start is called before the first frame update
-    void Start()
-    {
-        StartMovement();
-    }
-    public IEnumerator waitToMove(float times){
-        yield return new WaitForSecondsRealtime(times);
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public float timeToMove = 3f;
+    public string[] directions = {"up", "right", "down"}; //Список ходов
+
+    private IEnumerator Wait(float time) {
+        yield return new WaitForSeconds(3);
     }
 
-    public void StartMovement(){
+    void Start() {
+        Movement();
+    }
+
+    public void Movement() {
         foreach (string move in directions){
-            if(move == "up"){
-                transform.position = transform.position + Vector3.up;
+            StartCoroutine(Wait(timeToMove));
+
+            switch (move) {
+                case "up": transform.position += Vector3.up; break;
+                case "down": transform.position += Vector3.down; break;
+                case "right": transform.position += Vector3.right; break;
+                case "left": transform.position += Vector3.left; break;
             }
-            else if(move == "down"){
-                transform.position = transform.position + Vector3.down;
-            }
-            else if(move == "right"){
-                transform.position = transform.position + Vector3.right;
-            }
-            else if(move == "left"){
-                transform.position = transform.position + Vector3.left;
-            }
-            Debug.Log(transform.position.ToString());
-            StartCoroutine(waitToMove(timeToMove));
         }
     }
 }
