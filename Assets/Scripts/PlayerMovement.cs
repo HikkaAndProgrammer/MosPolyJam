@@ -5,15 +5,15 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float timeToMove = 1;
+    public float timeToMove = 1f;
     public string[] directions = {"up", "right", "down"};//Список ходов
     // Start is called before the first frame update
     void Start()
     {
         StartMovement();
     }
-    public IEnumerator waitToMove(){
-        yield return new WaitForSeconds(1);
+    public IEnumerator waitToMove(float times){
+        yield return new WaitForSecondsRealtime(times);
     }
     // Update is called once per frame
     void Update()
@@ -36,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
                 transform.position = transform.position + Vector3.left;
             }
             Debug.Log(transform.position.ToString());
-            StartCoroutine(waitToMove());
+            StartCoroutine(waitToMove(timeToMove));
         }
     }
 }
