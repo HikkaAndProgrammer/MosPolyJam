@@ -18,4 +18,14 @@ public class GameManager : MonoBehaviour
     {
         
     }
+
+    public void StartTheRun()
+    {
+        isMoving = true;
+    }
+
+    public void StopTheRun()
+    {
+        isMoving=false;
+    }
 }
