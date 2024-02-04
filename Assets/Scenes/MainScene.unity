@@ -895,6 +895,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ee1d2abcf1c69f48ae7de9cbfa0e56d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 2052230291}
   isMoving: 0
 --- !u!4 &898501522
 Transform:
@@ -1739,7 +1740,7 @@ GameObject:
   - component: {fileID: 1743184761}
   - component: {fileID: 1743184760}
   m_Layer: 5
-  m_Name: StopButton
+  m_Name: RetryButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2044,6 +2045,7 @@ MonoBehaviour:
   - right
   - up
   - right
+  currentDirIndex: 0
 --- !u!1 &2099561320
 GameObject:
   m_ObjectHideFlags: 0
