@@ -6,6 +6,7 @@ public class DragPlatform : MonoBehaviour
 {
     private Vector3 origin;
     private Vector3 difference;
+    [SerializeField] private Transform abc;
 
     private bool isDragging = false;
 
@@ -29,7 +30,7 @@ public class DragPlatform : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
             RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos(), Vector2.zero);
 
