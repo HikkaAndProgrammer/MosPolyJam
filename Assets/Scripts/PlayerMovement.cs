@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     void Update()
     {
-        
+
         if(GameManager.gameManager.isMoving){
             Move();
         }
@@ -29,25 +29,25 @@ public class PlayerMovement : MonoBehaviour
     }
     void Move(){
         switch (path[currentDirIndex]){
-                case "up": 
+                case "up":
                     directionMove = Vector3.up;
                     break;
-                case "down": 
+                case "down":
                     directionMove = Vector3.down;
                     break;
-                case "left": 
+                case "left":
                     directionMove = Vector3.left;
                     break;
-                case "right": 
+                case "right":
                     directionMove = Vector3.right;
                     break;
             }
-        transform.position += directionMove * Time.deltaTime * stepDuration;
+        transform.position += directionMove * Time.deltaTime / stepDuration;
         if (Vector3.Distance(startPos, transform.position) >= 1){
             if(currentDirIndex < path.Length){
                 currentDirIndex++;
                 transform.position = startPos + directionMove;
-                startPos = transform.position; 
+                startPos = transform.position;
             }
             else{
                 GameManager.gameManager.isMoving = false;

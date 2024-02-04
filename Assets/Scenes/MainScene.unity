@@ -700,7 +700,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ee1d2abcf1c69f48ae7de9cbfa0e56d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMoving: 1
+  isMoving: 0
 --- !u!4 &898501522
 Transform:
   m_ObjectHideFlags: 0
@@ -1315,7 +1315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8c0c33554224ea4689720f2b8c21025, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stepDuration: 1
+  stepDuration: 0.35
   tileSize: 1
   path:
   - up
