@@ -10,6 +10,15 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-
+        if(GameManager.gameManager.isMoving){
+            Move();
+        }
     }
+    void Start(){
+        
+    }
+    void Move(){
+        
+    }
+
 }
