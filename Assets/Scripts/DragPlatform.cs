@@ -33,7 +33,7 @@ public class DragPlatform : MonoBehaviour
         {
             RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos(), Vector2.zero);
 
-            if(hit != null && hit.transform == transform && !isDragging)
+            if (hit != null && hit.transform == transform && !isDragging)
             {
                 origin = transform.position;
                 difference = mouseWorldPos() - transform.position;
