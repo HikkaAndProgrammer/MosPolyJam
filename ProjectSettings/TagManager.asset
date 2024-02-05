@@ -5,6 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - RotateLeft
+  - RotateRight
+  - JumpUp
+  - JumpRight
+  - JumpDown
+  - JumpLeft
+  - Platform
   layers:
   - Default
   - TransparentFX

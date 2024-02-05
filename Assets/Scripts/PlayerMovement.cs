@@ -4,55 +4,84 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private float stepDuration = 1f; // time for one move
+    [SerializeField] private float tileSize = 1f;     // length of one move (== length of one tile)
+    [SerializeField] private Vector2 startDirection;  // Start Direction (0 == down, 1 == left, 2 == up, 3 == right)
+    [SerializeField] private Animator animator;       // Animator component
 
-    [SerializeField] private float stepDuration = 1f;
-    [SerializeField] private float tileSize = 1f;
-    [SerializeField] private string[] path;
-    //[SerializeField] private AnimationCurve curve;
-    private Vector3 directionMove;
-    public int currentDirIndex = 0;
-    private Vector3 startPos;
-    /// <summary>
-    ///private bool playerIsMoving = false;
-    /// </summary>
+    private Vector3 originPosition;                   // global start pos
+    private Vector3 startPosition;                    // on every move start pos
+    private Vector3 endPosition;                      // on every move end pos
+    private Vector3 direction = Vector2.right;        // move direction
+    private float elapsedTime;                        // time elapsed since the start of movement
+    private bool isMoving = false;                    // true if moving (!= gameManager.isRunning) (isRunning means all run, but isMoving means one move)
+    private bool isAlive = true;
+
+    void Start()
+    {
+        originPosition = transform.position;
+    }
+
     void Update()
     {
-
-        if(GameManager.gameManager.isMoving){
+        if (GameManager.gameManager.isRunning)
+        {
             Move();
         }
         else
         {
-           currentDirIndex = 0;
+            transform.position = originPosition;
+            direction = startDirection;
+            isMoving = false;
+            isAlive = true;
         }
+
+        animator.SetBool("IsRunning", GameManager.gameManager.isRunning && isAlive);
+
+        if      (direction == Vector3.down)  animator.SetInteger("Direction", 0); // ТУТ CASE НЕ РАБОТАЛ, ПРАВДА))) НЕ БЕЙТЕ)
+        else if (direction == Vector3.left)  animator.SetInteger("Direction", 1); // CASE DON'T WORK HERE, DON'T KILL ME PLS))
+        else if (direction == Vector3.up)    animator.SetInteger("Direction", 2);
+        else if (direction == Vector3.right) animator.SetInteger("Direction", 3);
     }
-    void Start(){
-        startPos = transform.position;
-    }
-    void Move(){
-        switch (path[currentDirIndex]){
-                case "up":
-                    directionMove = Vector3.up;
-                    break;
-                case "down":
-                    directionMove = Vector3.down;
-                    break;
-                case "left":
-                    directionMove = Vector3.left;
-                    break;
-                case "right":
-                    directionMove = Vector3.right;
-                    break;
+
+    void Move()
+    {
+        if (isMoving)
+        {
+            elapsedTime += Time.deltaTime;
+
+            transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / stepDuration);
+
+            if (elapsedTime >= stepDuration)
+            {
+                transform.position = new Vector2(Mathf.Round(endPosition.x - 0.5f) + 0.5f, Mathf.Round(endPosition.y - 0.5f) + 0.5f);
+                isMoving = false;
             }
-        transform.position += directionMove * Time.deltaTime / stepDuration;
-        if (Vector3.Distance(startPos, transform.position) >= 1){
-            if(currentDirIndex < path.Length){
-                currentDirIndex++;
-                transform.position = startPos + directionMove;
-                startPos = transform.position;
+        }
+        else
+        {
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.zero);
+
+            if (hit)
+            {
+                if (hit.transform.tag == "RotateLeft")
+                {
+                    direction = Quaternion.AngleAxis(90, Vector3.forward) * direction;
+                }
+                else if (hit.transform.tag == "RotateRight")
+                {
+                    direction = Quaternion.AngleAxis(-90, Vector3.forward) * direction;
+                }
+
+                isMoving = true;
+                elapsedTime = 0;
+
+                startPosition = transform.position;
+                endPosition = transform.position + direction * tileSize;
             }
-            else{
-                GameManager.gameManager.isMoving = false;
+            else
+            {
+                isAlive = false;
             }
         }
     }
