@@ -48,6 +48,24 @@ public class DragPlatform : MonoBehaviour
         if (isDragging && (!Input.GetMouseButton(0) || GameManager.gameManager.isRunning))
         {
             ceilPosition();
+
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                Transform childTransform = transform.GetChild(i).transform;
+
+                RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector3(childTransform.position.x + 0.5f, childTransform.position.y + 0.5f), Vector2.zero);
+
+                //RaycastHit2D hit = childTransform.GetComponent<BoxCollider2D>().Raycast(new Vector3(childTransform.position.x + 0.5f, childTransform.position.y + 0.5f), Vector2.zero);
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (hit.transform != childTransform)
+                    {
+                        transform.position = origin;
+                        break;
+                    }
+                }
+            }
+
             isDragging = false;
         }
     }

@@ -4,12 +4,21 @@ using UnityEngine;
 using UnityEngine.UI;
 public class UISwapButton : MonoBehaviour
 {
+    public static UISwapButton uiSwapButton;
     public Button runButton;
     public Button stopButton;
 
-    public void SwapButtons()//да, наговнокодил
+    void Update() //пїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ  <------ Р§Рµ Р·Р° РєРѕРјРјРµРЅС‚ РЅР° С‚Р°С‚Р°СЂСЃРєРѕРј???
     {
-        runButton.gameObject.SetActive(!runButton.IsActive());
-        stopButton.gameObject.SetActive(!stopButton.IsActive());
+        if (GameManager.gameManager.isRunning)
+        {
+            stopButton.gameObject.SetActive(true);
+            runButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            runButton.gameObject.SetActive(true);
+            stopButton.gameObject.SetActive(false);
+        }
     }
 }

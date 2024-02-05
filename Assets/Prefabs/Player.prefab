@@ -49,6 +49,7 @@ MonoBehaviour:
   tileSize: 1
   startDirection: {x: 1, y: 0}
   animator: {fileID: 6364141597147404454}
+  spriteRenderer: {fileID: 2976801017171201485}
 --- !u!1 &3974518333583398763
 GameObject:
   m_ObjectHideFlags: 0

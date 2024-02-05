@@ -18,6 +18,6 @@ public class FlyAnimation : MonoBehaviour
     void Update()
     {
         elapsedTime += Time.deltaTime;
-        transform.position = new Vector2(transform.position.x, startHeight + Mathf.Sin(elapsedTime * 2 * Mathf.PI / timeDuration) * amplitude);
+        transform.position = new Vector3(transform.position.x, startHeight + Mathf.Sin(elapsedTime * 2 * Mathf.PI / timeDuration) * amplitude, transform.position.z);
     }
 }
