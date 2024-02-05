@@ -6,8 +6,6 @@ public class DragPlatform : MonoBehaviour
 {
     private Vector3 origin;
     private Vector3 difference;
-    [SerializeField] private Transform abc;
-
     private bool isDragging = false;
 
     private Vector3 mouseWorldPos()
@@ -34,7 +32,7 @@ public class DragPlatform : MonoBehaviour
         {
             RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos(), Vector2.zero);
 
-            if (hit != null && hit.transform == transform && !isDragging)
+            if (hit && hit.transform.parent && hit.transform.parent.transform == transform && !isDragging && !GameManager.gameManager.isRunning)
             {
                 origin = transform.position;
                 difference = mouseWorldPos() - transform.position;
@@ -42,15 +40,33 @@ public class DragPlatform : MonoBehaviour
             }
         }
 
-        if (isDragging && !Input.GetMouseButton(0))
-        {
-            ceilPosition();
-            isDragging = false;
-        }
-
-        if (isDragging && Input.GetMouseButton(0))
+        if (isDragging && Input.GetMouseButton(0) && !GameManager.gameManager.isRunning)
         {
             transform.position = mouseWorldPos() - difference;
+        }
+
+        if (isDragging && (!Input.GetMouseButton(0) || GameManager.gameManager.isRunning))
+        {
+            ceilPosition();
+
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                Transform childTransform = transform.GetChild(i).transform;
+
+                RaycastHit2D[] hits = Physics2D.RaycastAll(new Vector3(childTransform.position.x + 0.5f, childTransform.position.y + 0.5f), Vector2.zero);
+
+                //RaycastHit2D hit = childTransform.GetComponent<BoxCollider2D>().Raycast(new Vector3(childTransform.position.x + 0.5f, childTransform.position.y + 0.5f), Vector2.zero);
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (hit.transform != childTransform)
+                    {
+                        transform.position = origin;
+                        break;
+                    }
+                }
+            }
+
+            isDragging = false;
         }
     }
 }
