@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     private float elapsedTime = 0;                        // time elapsed since the start of movement
     private float notAliveTime = 0;
     private bool isMoving = false;                    // true if moving (!= gameManager.isRunning) (isRunning means all run, but isMoving means one move)
+    private bool isJumping = false;
     private bool isAlive = true;
 
     void Start()
@@ -40,68 +41,121 @@ public class PlayerMovement : MonoBehaviour
             spriteRenderer.color = new Color(1f,1f,1f, 1f - notAliveTime);
         }
 
-        animator.SetBool("IsRunning", GameManager.gameManager.isRunning && isAlive);
+        animator.SetBool("IsRunning", GameManager.gameManager.isRunning && isAlive && !GameManager.gameManager.isWinned);
     }
 
     void Move()
     {
-        if (isMoving)
+        if (!GameManager.gameManager.isWinned)
         {
-            elapsedTime += Time.deltaTime;
-
-            transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / stepDuration);
-
-            if (elapsedTime >= stepDuration)
+            if (isMoving)
             {
-                transform.position = new Vector2(Mathf.Round(endPosition.x - 0.5f) + 0.5f, Mathf.Round(endPosition.y - 0.5f) + 0.5f);
-                isMoving = false;
+                elapsedTime += Time.deltaTime;
+
+                transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / stepDuration);
+
+                if (elapsedTime >= stepDuration)
+                {
+                    transform.position = new Vector2(Mathf.Round(endPosition.x - 0.5f) + 0.5f, Mathf.Round(endPosition.y - 0.5f) + 0.5f);
+                    isMoving = false;
+                }
             }
-        }
-        else if (!isAlive)
-        {
-            if (notAliveTime <= 2)
+            else if (isJumping)
             {
-                notAliveTime += Time.deltaTime;
-                transform.position -= new Vector3(0, notAliveTime*Time.deltaTime*50);
-                spriteRenderer.color = new Color(1f,1f,1f, 1f - notAliveTime*2);
+                elapsedTime += Time.deltaTime;
+
+                transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / stepDuration * 2);
+
+                if (elapsedTime >= stepDuration / 2)
+                {
+                    transform.position = new Vector2(Mathf.Round(endPosition.x - 0.5f) + 0.5f, Mathf.Round(endPosition.y - 0.5f) + 0.5f);
+                    isJumping = false;
+                }
+            }
+            else if (!isAlive)
+            {
+                if (notAliveTime <= 2)
+                {
+                    notAliveTime += Time.deltaTime;
+                    transform.position -= new Vector3(0, notAliveTime*Time.deltaTime*50);
+                    spriteRenderer.color = new Color(1f,1f,1f, 1f - notAliveTime*2);
+                }
+                else
+                {
+                    GameManager.gameManager.isRunning = false;
+                }
             }
             else
             {
-                GameManager.gameManager.isRunning = false;
-            }
-        }
-        else
-        {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.zero);
+                RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.zero);
 
-            if (hit)
-            {
-                if (hit.transform.tag == "RotateLeft")
+                if (hit)
                 {
-                    direction = Quaternion.AngleAxis(90, Vector3.forward) * direction;
+                    switch (hit.transform.tag)
+                    {
+                        case "RotateLeft":
+                            direction = Quaternion.AngleAxis(90, Vector3.forward) * direction;
+                            break;
+                        case "RotateRight":
+                            direction = Quaternion.AngleAxis(-90, Vector3.forward) * direction;
+                            break;
+                        case "End":
+                            GameManager.gameManager.isWinned = true;
+                            break;
+                        case "JumpDown":
+                            direction = Vector3.down;
+                            isJumping = true;
+
+                            elapsedTime = 0;
+                            startPosition = transform.position;
+                            endPosition = transform.position + direction * tileSize * 2;
+                            break;
+                        case "JumpLeft":
+                            direction = Vector3.left;
+                            isJumping = true;
+
+                            elapsedTime = 0;
+                            startPosition = transform.position;
+                            endPosition = transform.position + direction * tileSize * 2;
+                            break;
+                        case "JumpUp":
+                            direction = Vector3.up;
+                            isJumping = true;
+
+                            elapsedTime = 0;
+                            startPosition = transform.position;
+                            endPosition = transform.position + direction * tileSize * 2;
+                            break;
+                        case "JumpRight":
+                            direction = Vector3.right;
+                            isJumping = true;
+
+                            elapsedTime = 0;
+                            startPosition = transform.position;
+                            endPosition = transform.position + direction * tileSize * 2;
+                            break;
+                    }
+
+                    if (!isJumping)
+                    {
+                        isMoving = true;
+                        elapsedTime = 0;
+
+                        startPosition = transform.position;
+                        endPosition = transform.position + direction * tileSize;
+                    }
+
+                    if      (direction == Vector3.down)  animator.SetInteger("Direction", 0); // ТУТ CASE НЕ РАБОТАЛ, ПРАВДА))) НЕ БЕЙТЕ)
+                    else if (direction == Vector3.left)  animator.SetInteger("Direction", 1); // CASE DON'T WORK HERE, DON'T KILL ME PLS))
+                    else if (direction == Vector3.up)    animator.SetInteger("Direction", 2);
+                    else if (direction == Vector3.right) animator.SetInteger("Direction", 3);
                 }
-                else if (hit.transform.tag == "RotateRight")
+                else
                 {
-                    direction = Quaternion.AngleAxis(-90, Vector3.forward) * direction;
+                    isAlive = false;
+                    transform.position += new Vector3(0, 0, 16);
                 }
-
-                if      (direction == Vector3.down)  animator.SetInteger("Direction", 0); // ТУТ CASE НЕ РАБОТАЛ, ПРАВДА))) НЕ БЕЙТЕ)
-                else if (direction == Vector3.left)  animator.SetInteger("Direction", 1); // CASE DON'T WORK HERE, DON'T KILL ME PLS))
-                else if (direction == Vector3.up)    animator.SetInteger("Direction", 2);
-                else if (direction == Vector3.right) animator.SetInteger("Direction", 3);
-
-                isMoving = true;
-                elapsedTime = 0;
-
-                startPosition = transform.position;
-                endPosition = transform.position + direction * tileSize;
-            }
-            else
-            {
-                isAlive = false;
-                transform.position += new Vector3(0, 0, 16);
             }
         }
     }
-
 }

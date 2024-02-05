@@ -12,6 +12,7 @@ TagManager:
   - JumpDown
   - JumpLeft
   - Platform
+  - End
   layers:
   - Default
   - TransparentFX

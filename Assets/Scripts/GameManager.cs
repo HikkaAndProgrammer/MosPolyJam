@@ -7,16 +7,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager gameManager;
     public bool isRunning = false;
+    public bool isWinned = false;
 
     void Start()
     {
-        DontDestroyOnLoad(gameObject);
         gameManager = this;
-    }
-
-    void Update()
-    {
-
     }
 
     public void StartTheRun()

@@ -9,6 +9,7 @@ public class FlyAnimation : MonoBehaviour
 
     private float elapsedTime = 0;
     private float startHeight;
+    private float winHeight;
 
     void Start()
     {
